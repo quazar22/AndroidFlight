@@ -7,6 +7,7 @@ public class ChangeScene : MonoBehaviour
 {
     public GameObject Networking;
 
+	//not used anymore
     public void LoadScene(string scene)
     {
         DontDestroyOnLoad(Networking);
