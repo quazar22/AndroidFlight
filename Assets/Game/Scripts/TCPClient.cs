@@ -116,6 +116,14 @@ public class TCPClient : MonoBehaviour
                          q.z + Delimiters.ATTRIB_DELIM +
                          q.w;
             WriteSocket(outString);
+            foreach (Player player in playerList)
+            {
+                //player.pos is goal position
+                //pLoc.position is old position
+                Transform pLoc = player.planeobj.transform;
+                pLoc.position = Vector3.Lerp(pLoc.position, player.pos, 0.35f); //0.35f feels hacky -- consequently works okay
+                pLoc.rotation = Quaternion.Lerp(player.planeobj.transform.rotation, player.rot, 0.35f);
+            }
         }
     }
 
@@ -211,7 +219,7 @@ public class TCPClient : MonoBehaviour
         {
             if(p.id == Int32.Parse(argvec[0]))
             {
-                SetPosition(p, argvec, Commands.ITERATIONS);
+                SetPosition(p, argvec);
                 SetRotation(p, argvec);
             }
         }
@@ -243,31 +251,21 @@ public class TCPClient : MonoBehaviour
         return q;
     }
 
-    internal void SetPosition(Player client, string[] argvec, int iterations)
+    internal void SetPosition(Player client, string[] argvec)
     {
         Vector3 newPos = new Vector3(float.Parse(argvec[1]),
-                        float.Parse(argvec[2]),
-                        float.Parse(argvec[3]));
-        Vector3 oldPos = client.planeobj.transform.position;
-        Vector3 iterVec =
-            new Vector3((Math.Abs(newPos.x) - Math.Abs(oldPos.x)) / iterations,
-                        (Math.Abs(newPos.y) - Math.Abs(oldPos.y)) / iterations,
-                        (Math.Abs(newPos.z) - Math.Abs(oldPos.z)) / iterations);
-        //for (int i = iterations; i > 0; i--)
-        //{
-        //    client.planeobj.transform.position += iterVec;
-        //}
-        client.planeobj.transform.position = newPos;
+                                     float.Parse(argvec[2]),
+                                     float.Parse(argvec[3]));
+        client.pos = newPos;
     }
 
     internal void SetRotation(Player client, string[] argvec)
     {
         Quaternion rot = new Quaternion(float.Parse(argvec[4]),
-                           float.Parse(argvec[5]),
-                           float.Parse(argvec[6]),
-                           float.Parse(argvec[7])
-                       );
-        client.planeobj.transform.rotation = rot;
+                                        float.Parse(argvec[5]),
+                                        float.Parse(argvec[6]),
+                                        float.Parse(argvec[7]));
+        client.rot = rot;
     }
 
     void OnApplicationQuit()
@@ -340,7 +338,7 @@ public class TCPClient : MonoBehaviour
     public class Commands
     {
         public const int PASS = 0;
-        public const int ITERATIONS = 10;
+        public const float SPEED = 50f;
         public const int MAX_PLAYERS = 8;
 
         public const int SEND_DATA = 10;
