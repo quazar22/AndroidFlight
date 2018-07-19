@@ -338,7 +338,6 @@ public class TCPClient : MonoBehaviour
     public class Commands
     {
         public const int PASS = 0;
-        public const float SPEED = 50f;
         public const int MAX_PLAYERS = 8;
 
         public const int SEND_DATA = 10;
