@@ -15,6 +15,7 @@ public class TCPServer : MonoBehaviour
     internal static TcpListener server;
     static private bool serverStarted;
     private TCPClient hostingclient;
+    internal static bool gameStarted = false;
 
     float t = 0;
     
@@ -207,7 +208,8 @@ public class TCPServer : MonoBehaviour
         TcpListener listener = (TcpListener)AR.AsyncState;
         clients.Add(new ServerClient(listener.EndAcceptTcpClient(AR), clients.Count));
         Commands.UpdateUserIndex(clients[clients.Count - 1], clients[clients.Count - 1].userId);
-        StartListening();
+        if(!gameStarted || (clients.Count != Commands.MAX_PLAYERS))
+            StartListening();
     }
 
     private void OnApplicationQuit()
@@ -354,6 +356,7 @@ static public class Commands
 
     static public string BeginGame()
     {
+        TCPServer.gameStarted = true;
         float[] x = new float[] {0};
         float y = 275f;
         float[] z = new float[] {0, 100, 200, 300, 400, 500};

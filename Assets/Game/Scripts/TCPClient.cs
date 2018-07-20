@@ -53,7 +53,7 @@ public class TCPClient : MonoBehaviour
             ReadyButton = GameObject.Find("ReadyButton").GetComponent<Button>();
             if (clientplayer.id != 0)
             {
-                DestroyImmediate(BeginButton);
+                DestroyImmediate(BeginButton.gameObject);
             }
             else
             {
